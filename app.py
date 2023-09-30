@@ -1,4 +1,5 @@
 import os
+import pdfplumber
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.vectorstores import FAISS
 from langchain.document_loaders import TextLoader
@@ -19,20 +20,27 @@ model_norm = HuggingFaceBgeEmbeddings(
     encode_kwargs=encode_kwargs
 )
 
-current_directory = os.getcwd()
-relative_file = "state_of_the_union.txt"
-path_to_file = os.path.join(current_directory, relative_file)
-loader = TextLoader(path_to_file)
-documents = loader.load()
-text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
-docs = text_splitter.split_documents(documents)
-
 ## Here is the nmew embeddings being used
 embedding = model_norm
 
-db = FAISS.from_documents(docs, embedding)
+upload_pdf = st.file_uploader("Subir tu DOCUMENTO", type=['txt', 'pdf', 'docx'], accept_multiple_files=True)
+if upload_pdf is not None and st.button('📝✅ Cargar Documentos'):
+    documents = []
+    with st.spinner('🔨 Leyendo documentos...'):
+        for upload_pdf in upload_pdf:
+            print(upload_pdf.type)
+            if upload_pdf.type == 'text/plain':
+                documents += [upload_pdf.read().decode()]
+            elif upload_pdf.type == 'application/pdf':
+                with pdfplumber.open(upload_pdf) as pdf:
+                    documents += [page.extract_text() for page in pdf.pages]
 
-query = "What did the president say about Ketanji Brown Jackson"
-Texts = db.similarity_search(query)
+        text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
+        docs = text_splitter.split_documents(documents)
 
-st.write(Texts[0].page_content)
+        db = FAISS.from_documents(docs, embedding)
+
+        st.write(docs)
+
+        if prompt:=st.text_input("Insert your query here"):
+            st.write(db.as_retriever(prompt))
