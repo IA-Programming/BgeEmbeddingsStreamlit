@@ -23,7 +23,7 @@ model_norm = HuggingFaceBgeEmbeddings(
 ## Here is the nmew embeddings being used
 embedding = model_norm
 
-upload_pdf = st.file_uploader("Subir tu DOCUMENTO", type=['txt', 'pdf', 'docx'], accept_multiple_files=True)
+upload_pdf = st.file_uploader("Subir tu DOCUMENTO", type=['txt', 'pdf'], accept_multiple_files=True)
 if upload_pdf is not None and st.button('📝✅ Cargar Documentos'):
     documents = []
     with st.spinner('🔨 Leyendo documentos...'):
@@ -36,7 +36,7 @@ if upload_pdf is not None and st.button('📝✅ Cargar Documentos'):
                     documents += [page.extract_text() for page in pdf.pages]
 
         text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
-        docs = text_splitter.split_documents(documents)
+        docs = text_splitter.create_documents(documents)
 
         db = FAISS.from_documents(docs, embedding)
 
