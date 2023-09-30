@@ -1,0 +1,6 @@
+faiss-cpu
+langchain
+huggingface_hub
+tiktoken
+sentence_transformers
+streamlit
