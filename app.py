@@ -1,3 +1,4 @@
+import os
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.vectorstores import FAISS
 from langchain.document_loaders import TextLoader
@@ -18,7 +19,10 @@ model_norm = HuggingFaceBgeEmbeddings(
     encode_kwargs=encode_kwargs
 )
 
-loader = TextLoader("/content/state_of_the_union.txt")
+current_directory = os.getcwd()
+relative_file = "state_of_the_union.txt"
+path_to_file = os.path.join(current_directory, relative_file)
+loader = TextLoader(path_to_file)
 documents = loader.load()
 text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
 docs = text_splitter.split_documents(documents)
