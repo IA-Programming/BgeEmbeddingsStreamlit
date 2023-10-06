@@ -26,23 +26,23 @@ def main():
     upload_pdf = st.file_uploader("Subir tu DOCUMENTO", type=['txt', 'pdf'], accept_multiple_files=True)
     if upload_pdf is not None:
         documents = []
-        # with st.spinner('🔨 Leyendo documentos...'):
-        for upload_pdf in upload_pdf:
-            print(upload_pdf.type)
-            if upload_pdf.type == 'text/plain':
-                documents += [upload_pdf.read().decode()]
-            elif upload_pdf.type == 'application/pdf':
-                with pdfplumber.open(upload_pdf) as pdf:
-                    documents += [page.extract_text() for page in pdf.pages]
+        with st.spinner('🔨 Leyendo documentos...'):
+            for upload_pdf in upload_pdf:
+                print(upload_pdf.type)
+                if upload_pdf.type == 'text/plain':
+                    documents += [upload_pdf.read().decode()]
+                elif upload_pdf.type == 'application/pdf':
+                    with pdfplumber.open(upload_pdf) as pdf:
+                        documents += [page.extract_text() for page in pdf.pages]
 
-        text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
-        docs = text_splitter.create_documents(documents)
+            text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
+            docs = text_splitter.create_documents(documents)
 
-        db = FAISS.from_documents(docs, embedding)
+            db = FAISS.from_documents(docs, embedding)
 
-        st.write(docs)
-        if prompt:=st.text_input("Insert your query here"):
-                st.write(db.as_retriever(prompt))
+            st.write(docs)
+            if prompt:=st.text_input("Insert your query here"):
+                    st.write(db.as_retriever(prompt))
 
 if __name__ == '__main__':
     main()
