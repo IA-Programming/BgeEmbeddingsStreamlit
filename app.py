@@ -12,10 +12,7 @@ st.set_page_config(
 
 st.title('🤗💬 Embeddings BGE')
 
-if 'docs' not in st.session_state:
-    st.session_state["docs"]=[]
-
-model_name = "BAAI/bge-base-en"
+model_name = "BAAI/bge-small-en-v1.5"
 encode_kwargs = {'normalize_embeddings': True} # set True to compute cosine similarity
 
 model_norm = HuggingFaceBgeEmbeddings(
