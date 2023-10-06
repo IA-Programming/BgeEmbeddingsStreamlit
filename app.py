@@ -2,7 +2,6 @@ import os
 import pdfplumber
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.vectorstores import FAISS
-from langchain.document_loaders import TextLoader
 from langchain.embeddings import HuggingFaceBgeEmbeddings
 import streamlit as st
 
