@@ -12,6 +12,9 @@ st.set_page_config(
 
 st.title('🤗💬 Embeddings BGE')
 
+if 'docs' not in st.session_state:
+    st.session_state["docs"]=[]
+
 model_name = "BAAI/bge-base-en"
 encode_kwargs = {'normalize_embeddings': True} # set True to compute cosine similarity
 
@@ -40,7 +43,16 @@ if upload_pdf is not None and st.button('📝✅ Cargar Documentos'):
 
         db = FAISS.from_documents(docs, embedding)
 
+        if 'db' not in st.session_state:
+            st.session_state['db'] = db
+
+        st.session_state['docs'] = docs
+
         st.write(docs)
 
         if prompt:=st.text_input("Insert your query here"):
             st.write(db.as_retriever(prompt))
+elif st.session_state['docs'] != []:
+    st.write(st.session_state['docs'])
+    if prompt:=st.text_input("Insert your query here"):
+            st.write(st.session_state['db'].as_retriever(prompt))
