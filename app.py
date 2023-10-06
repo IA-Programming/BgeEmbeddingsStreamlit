@@ -23,7 +23,7 @@ model_norm = HuggingFaceBgeEmbeddings(
 embedding = model_norm
 
 upload_pdf = st.file_uploader("Subir tu DOCUMENTO", type=['txt', 'pdf'], accept_multiple_files=True)
-if upload_pdf is not None and st.button('📝✅ Cargar Documentos'):
+if upload_pdf is not None:
     documents = []
     with st.spinner('🔨 Leyendo documentos...'):
         for upload_pdf in upload_pdf:
@@ -41,5 +41,5 @@ if upload_pdf is not None and st.button('📝✅ Cargar Documentos'):
 
     st.write(docs)
 
-    # if prompt:=st.text_input("Insert your query here"):
-    st.write(db.as_retriever("interests"))
+    if prompt:=st.text_input("Insert your query here"):
+        st.write(db.similarity_search(query=prompt))
