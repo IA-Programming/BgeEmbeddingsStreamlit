@@ -2,7 +2,6 @@ import os
 import pdfplumber
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.vectorstores import FAISS
-from langchain.document_loaders import TextLoader
 from langchain.embeddings import HuggingFaceBgeEmbeddings
 import streamlit as st
 
@@ -11,9 +10,6 @@ st.set_page_config(
 )
 
 st.title('🤗💬 Embeddings BGE')
-
-if 'docs' not in st.session_state:
-    st.session_state['docs'] = []
 
 model_name = "BAAI/bge-small-en-v1.5"
 encode_kwargs = {'normalize_embeddings': True} # set True to compute cosine similarity
@@ -27,7 +23,7 @@ model_norm = HuggingFaceBgeEmbeddings(
 embedding = model_norm
 
 upload_pdf = st.file_uploader("Subir tu DOCUMENTO", type=['txt', 'pdf'], accept_multiple_files=True)
-if upload_pdf is not None and st.button('📝✅ Cargar Documentos'):
+if upload_pdf is not None:
     documents = []
     with st.spinner('🔨 Leyendo documentos...'):
         for upload_pdf in upload_pdf:
@@ -43,16 +39,6 @@ if upload_pdf is not None and st.button('📝✅ Cargar Documentos'):
 
         db = FAISS.from_documents(docs, embedding)
 
-        if 'db' not in st.session_state:
-            st.session_state['db'] = db
-
-        st.session_state['docs'] = docs
-
-        st.write(docs)
-
-        if prompt:=st.text_input("Insert your query here"):
-            st.write(db.as_retriever(prompt))
-elif st.session_state['docs'] != []:
-    st.write(st.session_state['docs'])
+    st.write(docs)
     if prompt:=st.text_input("Insert your query here"):
-            st.write(st.session_state['db'].as_retriever(prompt))
+            st.write(db.as_retriever(prompt))
