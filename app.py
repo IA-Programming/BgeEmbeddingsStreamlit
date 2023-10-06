@@ -5,27 +5,28 @@ from langchain.vectorstores import FAISS
 from langchain.embeddings import HuggingFaceBgeEmbeddings
 import streamlit as st
 
-st.set_page_config(
-    page_title="Trying to see embeddings💬", page_icon="🤗", layout="wide", initial_sidebar_state="expanded"
-)
+def main():
+    st.set_page_config(
+        page_title="Trying to see embeddings💬", page_icon="🤗", layout="wide", initial_sidebar_state="expanded"
+    )
 
-st.title('🤗💬 Embeddings BGE')
+    st.title('🤗💬 Embeddings BGE')
 
-model_name = "BAAI/bge-small-en-v1.5"
-encode_kwargs = {'normalize_embeddings': True} # set True to compute cosine similarity
+    model_name = "BAAI/bge-small-en-v1.5"
+    encode_kwargs = {'normalize_embeddings': True} # set True to compute cosine similarity
 
-model_norm = HuggingFaceBgeEmbeddings(
-    model_name=model_name,
-    encode_kwargs=encode_kwargs
-)
+    model_norm = HuggingFaceBgeEmbeddings(
+        model_name=model_name,
+        encode_kwargs=encode_kwargs
+    )
 
-## Here is the nmew embeddings being used
-embedding = model_norm
+    ## Here is the nmew embeddings being used
+    embedding = model_norm
 
-upload_pdf = st.file_uploader("Subir tu DOCUMENTO", type=['txt', 'pdf'], accept_multiple_files=True)
-if upload_pdf is not None:
-    documents = []
-    with st.spinner('🔨 Leyendo documentos...'):
+    upload_pdf = st.file_uploader("Subir tu DOCUMENTO", type=['txt', 'pdf'], accept_multiple_files=True)
+    if upload_pdf is not None:
+        documents = []
+        # with st.spinner('🔨 Leyendo documentos...'):
         for upload_pdf in upload_pdf:
             print(upload_pdf.type)
             if upload_pdf.type == 'text/plain':
@@ -39,6 +40,9 @@ if upload_pdf is not None:
 
         db = FAISS.from_documents(docs, embedding)
 
-    st.write(docs)
-    if prompt:=st.text_input("Insert your query here"):
-            st.write(db.as_retriever(prompt))
+        st.write(docs)
+        if prompt:=st.text_input("Insert your query here"):
+                st.write(db.as_retriever(prompt))
+
+if __name__ == '__main__':
+    main()
