@@ -40,7 +40,7 @@ if upload_pdf is not None and st.button('📝✅ Cargar Documentos'):
 
         db = FAISS.from_documents(docs, embedding)
 
-        st.write(docs)
+    st.write(docs)
 
-        if prompt:=st.text_input("Insert your query here"):
-            st.write(db.as_retriever(prompt))
+    if prompt:=st.text_input("Insert your query here"):
+        st.write(db.as_retriever(prompt))
