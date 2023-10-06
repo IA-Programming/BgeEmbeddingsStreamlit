@@ -23,7 +23,10 @@ model_norm = HuggingFaceBgeEmbeddings(
 embedding = model_norm
 
 upload_pdf = st.file_uploader("Subir tu DOCUMENTO", type=['txt', 'pdf'], accept_multiple_files=True)
-if upload_pdf is not None:
+boton =  st.button('📝✅ Cargar Documentos')
+if 'button' not in st.session_state:
+    st.session_state['button'] = boton
+if upload_pdf is not None and st.session_state['button']:
     documents = []
     with st.spinner('🔨 Leyendo documentos...'):
         for upload_pdf in upload_pdf:
